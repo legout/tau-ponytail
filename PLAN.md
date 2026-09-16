@@ -2,8 +2,10 @@
 
 ## Status
 
-Proposed. This repository is the planned standalone Tau extension; no
-implementation has been started yet.
+Superseded for execution by the approved
+[behavioral specification](docs/specs/tau-ponytail-v1.md) and approved
+[implementation plan](docs/plans/tau-ponytail-v1.md). This document is retained
+as design evidence; no implementation has been started yet.
 
 ## Goal
 
