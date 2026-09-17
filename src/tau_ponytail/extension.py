@@ -79,9 +79,15 @@ def setup(tau: ExtensionAPI) -> None:
         nonlocal current_mode, configured_default
         configured_default, problem = default_mode()
         current_mode = configured_default
+        quiet, quiet_problem = quiet_startup()
+        # A valid default-mode env masks the config read in default_mode(); the
+        # quiet_startup() read still surfaces it. Never report one diagnostic
+        # twice (default_mode() may embed the same config problem in a joined
+        # message when the env value itself is unsupported).
+        if quiet_problem is not None and quiet_problem not in (problem or ""):
+            tau.notify(quiet_problem, level=_NOTIFY_WARNING)
         if problem is not None:
             tau.notify(problem, level=_NOTIFY_WARNING)
-        quiet, _ = quiet_startup()
         if not quiet:
             tau.notify(f"Ponytail loaded: {current_mode}")
 

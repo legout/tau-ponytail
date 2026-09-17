@@ -77,6 +77,30 @@ async def test_invalid_config_warns_but_does_not_crash(tmp_path) -> None:
     assert result == f"BASE\n\n{instructions_for_mode('full')}"
 
 
+async def test_valid_env_default_still_surfaces_quiet_config_diagnostic(
+    tmp_path, monkeypatch
+) -> None:
+    """Regression: a valid PONYTAIL_DEFAULT_MODE must not mask a malformed config."""
+    from tau_ponytail.config import config_path
+
+    path = config_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("{broken", encoding="utf-8")
+    monkeypatch.setenv("PONYTAIL_DEFAULT_MODE", "lite")
+    ui = RecordingUiBridge()
+    runtime = load_runtime(tmp_path, setup, ui=ui)
+
+    await runtime.emit_session_start("startup")
+
+    assert len(ui.notifications) == 2
+    assert "Could not parse" in ui.notifications[0][0]
+    assert ui.notifications[0][1] == "warning"
+    assert ui.notifications[1] == ("Ponytail loaded: lite", "info")
+
+    result = await runtime.run_before_agent_start_hooks(prompt="go", system_prompt="BASE")
+    assert result == f"BASE\n\n{instructions_for_mode('lite')}"
+
+
 async def test_before_agent_start_appends_exactly_one_instruction(tmp_path) -> None:
     runtime = load_runtime(tmp_path, setup)
     await runtime.emit_session_start("startup")
