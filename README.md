@@ -2,9 +2,10 @@
 
 A small Python extension that brings Ponytail's minimal-code mode to Tau.
 
-This repository contains an approved v1 behavior specification, accepted
-architectural decisions, and an approved implementation plan. It targets Tau's
-public Python extension API and will not modify Tau core or require runtime
+This repository contains the approved v1 specification revision and implementation
+plan reconciled with the public Tau prerequisite work in
+[huggingface/tau#732](https://github.com/huggingface/tau/pull/732). It targets
+Tau's public Python extension API and will not modify Tau core or require runtime
 dependencies beyond Python's standard library.
 
 ## Planned usage
@@ -34,7 +35,8 @@ tau install git:github.com/<owner>/tau-ponytail
 ```
 
 The approved behavioral contract is
-[docs/specs/tau-ponytail-v1.md](docs/specs/tau-ponytail-v1.md), and the approved
+[docs/specs/tau-ponytail-v1.md](docs/specs/tau-ponytail-v1.md), and its approved
 execution map is [docs/plans/tau-ponytail-v1.md](docs/plans/tau-ponytail-v1.md).
 Domain vocabulary is in [CONTEXT.md](CONTEXT.md), architectural rationale is in
-[docs/adr/](docs/adr/), and [PLAN.md](PLAN.md) is retained as design evidence.
+[docs/adr/](docs/adr/), and [PLAN.md](PLAN.md) is retained as historical design
+evidence.

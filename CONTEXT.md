@@ -9,8 +9,8 @@ Tau Ponytail is a standalone Tau extension that applies Ponytail's minimal-code 
 **Tau extension**: The standalone integration that adds Ponytail behavior through Tau's public extension contract.
 _Avoid_: Pi adapter, Tau-core plugin
 
-**Ponytail instruction**: Behavioral guidance that tells the agent how strongly to prefer deletion, standard facilities, and the smallest safe change.
-_Avoid_: system prompt, policy text
+**Ponytail instruction**: Behavioral guidance appended to one agent run's system prompt that tells the agent how strongly to prefer deletion, standard facilities, and the smallest safe change.
+_Avoid_: user message, durable prompt message, policy text
 
 **Shortcut command**: A direct command that queues one of Ponytail's companion capabilities, such as review, audit, debt, gain, or help.
 _Avoid_: skill implementation, mode

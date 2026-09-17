@@ -1,6 +1,8 @@
 ---
-status: accepted
+status: superseded
 approved: 2026-09-16
+superseded: 2026-09-17
+superseded-by: 0004-run-scoped-system-prompt-guidance.md
 source: ../../PLAN.md
 ---
 

@@ -1,6 +1,8 @@
 ---
-status: accepted
+status: superseded
 approved: 2026-09-16
+superseded: 2026-09-17
+superseded-by: 0005-persist-default-until-session-entry-readback.md
 source: ../../PLAN.md
 ---
 

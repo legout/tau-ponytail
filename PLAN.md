@@ -5,7 +5,10 @@
 Superseded for execution by the approved
 [behavioral specification](docs/specs/tau-ponytail-v1.md) and approved
 [implementation plan](docs/plans/tau-ponytail-v1.md). This document is retained
-as design evidence; no implementation has been started yet.
+as historical design evidence. Its `context`-hook and synchronous-command assumptions
+were replaced by the public Tau prerequisites proposed and implemented in
+[huggingface/tau#732](https://github.com/huggingface/tau/pull/732); do not execute
+those obsolete sections.
 
 ## Goal
 
