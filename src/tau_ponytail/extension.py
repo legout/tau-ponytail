@@ -7,6 +7,7 @@ generation and resets to the resolved default on every ``session_start``.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import Final
 
 from tau_coding.extensions import (
@@ -15,9 +16,15 @@ from tau_coding.extensions import (
     ExtensionAPI,
     ExtensionCommandContext,
     ExtensionContext,
+    InputEvent,
 )
 
-from .commands import parse_ponytail_command
+from .commands import (
+    SHORTCUT_SKILLS,
+    is_deactivation_command,
+    parse_ponytail_command,
+    shortcut_request,
+)
 from .config import default_mode, quiet_startup, write_default_mode
 from .instructions import instructions_for_mode
 from .modes import Mode
@@ -93,5 +100,35 @@ def setup(tau: ExtensionAPI) -> None:
             system_prompt=f"{base}{instructions_for_mode(current_mode)}"
         )
 
+    def shortcut_handler(skill: str) -> Callable[[str, ExtensionCommandContext], str | None]:
+        def handler(args: str, context: ExtensionCommandContext) -> str | None:
+            del context
+            message = shortcut_request(skill, args)
+            if tau.context.is_running:
+                tau.send_user_message(message, deliver_as="follow_up")
+                return f"{message} queued as follow-up."
+            tau.send_user_message(message)
+            return None
+
+        return handler
+
+    for skill in SHORTCUT_SKILLS:
+        tau.register_command(
+            f"ponytail-{skill}",
+            shortcut_handler(skill),
+            description=f"Run /skill:ponytail-{skill}",
+        )
+
+    def on_input(event: object, context: ExtensionContext) -> None:
+        del context
+        nonlocal current_mode
+        if not isinstance(event, InputEvent) or event.source == "extension":
+            return
+        if current_mode != "off" and is_deactivation_command(event.text):
+            current_mode = "off"
+            tau.notify("Ponytail mode set to off.")
+        # Never consumes or transforms: the input continues to the model unchanged.
+
+    tau.on("input", on_input)
     tau.on("session_start", on_session_start)
     tau.on("before_agent_start", on_before_agent_start)

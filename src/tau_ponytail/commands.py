@@ -8,6 +8,7 @@ preserved in this repository's ``LICENSE``.
 
 from __future__ import annotations
 
+import re
 import typing
 from dataclasses import dataclass
 
@@ -50,3 +51,29 @@ def parse_ponytail_command(text: str, default_mode: Mode) -> ParsedCommand:
     if mode is None:
         return ParsedCommand("invalid", reason="invalid-mode")
     return ParsedCommand("set-mode", mode=mode)
+
+
+# "stop ponytail" / "normal mode" turn Ponytail off, but only as a standalone
+# command. Matching the phrase anywhere swallowed ordinary requests like
+# "add a normal mode toggle", so the whole input must be the command, ignoring
+# case and trailing punctuation (upstream ``isDeactivationCommand``).
+_DEACTIVATION_PHRASES = frozenset({"stop ponytail", "normal mode"})
+_TRAILING_NOISE = re.compile(r"[.!?\s]+$")
+
+
+def is_deactivation_command(text: str) -> bool:
+    """True only for a whole-input deactivation phrase.
+
+    Case- and whitespace-tolerant with optional trailing ``.``, ``!``, or
+    ``?``; comma/semicolon suffixes do not match.
+    """
+    return _TRAILING_NOISE.sub("", text.strip().lower()) in _DEACTIVATION_PHRASES
+
+
+SHORTCUT_SKILLS: typing.Final = ("review", "audit", "debt", "gain", "help")
+
+
+def shortcut_request(skill: str, args: str = "") -> str:
+    """Build the ``/skill:ponytail-*`` request message for one shortcut."""
+    normalized = args.strip()
+    return f"/skill:ponytail-{skill} {normalized}" if normalized else f"/skill:ponytail-{skill}"
