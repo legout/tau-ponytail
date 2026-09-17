@@ -1,0 +1,59 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tau-ponytail"
+version = "0.1.0"
+description = "Ponytail's minimal-code discipline as a standalone Tau extension."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.tau]
+extensions = ["src/tau_ponytail/extension.py"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tau_ponytail"]
+
+[dependency-groups]
+dev = [
+    # Development Tau build providing the public extension prerequisite seams
+    # (`before_agent_start`, awaitable commands) from huggingface/tau#732,
+    # pinned to the exact contributor commit bad16acf984dbe921ecbe18e57b75b362c04ff55
+    # (equivalent to git+https://github.com/legout/tau@bad16acf984dbe921ecbe18e57b75b362c04ff55).
+    "tau-ai @ https://github.com/legout/tau/archive/bad16acf984dbe921ecbe18e57b75b362c04ff55.tar.gz",
+    "mypy>=1.10",
+    "pytest>=8.0",
+    "ruff>=0.5",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+# The embedded instruction body is verbatim upstream 4.10.0 text; never reflow it.
+"src/tau_ponytail/instructions.py" = ["E501"]
+
+[tool.pyright]
+# Static-check resolution context: the project venv carries the development
+# Tau build and this package (editable install); src covers direct source use.
+venvPath = "."
+venv = ".venv"
+extraPaths = ["src"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["tau_ponytail"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
